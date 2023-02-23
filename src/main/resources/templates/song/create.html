@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+    <meta charset="UTF-8">
+    <title>Create song</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
+              integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            /*position: absolute;*/
+        }
+
+        .topnav {
+            width: 100%;
+            overflow: hidden;
+            background-color: #333;
+            position: fixed;
+        }
+
+        .topnav a {
+            float: left;
+            color: #f2f2f2;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+            font-size: 17px;
+        }
+
+        .topnav a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+
+        .topnav a.active {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        img {
+            max-width: 100px;
+            height: auto;
+        }
+
+        a {
+            text-decoration: none !important;
+        }
+
+
+    </style>
+</head>
+<body>
+<div class="topnav" id="navbarSupportedContent" style="padding-right: 10px">
+    <div class="nav-item active">
+        <a class="nav-link" sec:authorize="isAnonymous()" th:href="@{/login}" href="#">Login</a>
+    </div>
+    <div class="nav-item active">
+        <span sec:authorize="isAuthenticated()">
+                <a th:href="@{/logout}">Sign Out</a>|<a href="/song/list">Songs</a>
+        </span>
+        </span> | <span sec:authorize="hasRole('ROLE_SUPER_ADMIN')">
+            <a href="/role/list">Roles</a>
+            <a href="/user/list">Users</a>
+            <a href="/album/list">Albums</a>
+        </span>
+    </div>
+</div>
+<br><br><br>
+<span sec:authorize="isAuthenticated()">
+            User logged | <span sec:authentication="name"></span><br>
+            Role | <span sec:authentication="principal.authorities"></span>
+        </span>
+<h1>Create new song</h1>
+
+<th:block th:if="${message}">
+    <p th:text="${message}"
+       style="color:lightgreen;margin:10px 0px;"></p>
+</th:block>
+<form th:action="@{/song/create}" th:object="${songDto}" method="post" enctype="multipart/form-data">
+    <table border="1" class="table table-striped">
+        <tr>
+            <td>Name:</td>
+            <td><input type="text" th:field="*{name}"/></td>
+        </tr>
+        <tr>
+            <td>Album:</td>
+            <td>
+                <select th:field="*{album}">
+                    <option th:each="a : ${albumDtos}" th:value="${a.id}" th:text="${a.name}"></option>
+                </select>
+            </td>
+        </tr>
+        <td>Category:</td>
+        <td>
+            <select th:field="*{category}">
+                <option th:each="c : ${categoryDtos}" th:value="${c.id}" th:text="${c.name}"></option>
+            </select>
+        </td>
+        <tr>
+            <td>Link:</td>
+            <td><input type="file" id="file" name="file" accept=".mp3"></td>
+        </tr>
+        <tr>
+            <td>Image:</td>
+            <td><input type="text" th:field="*{image}"/></td>
+        </tr>
+        <td>Singer:</td>
+        <td>
+            <select th:field="*{singer}">
+                <option th:each="s : ${singerDtos}" th:value="${s.id}" th:text="${s.name}"></option>
+            </select>
+        </td>
+        <tr>
+            <td></td>
+            <td><input type="submit" value="Create song"></td>
+        </tr>
+    </table>
+</form>
+</body>
+</html>
